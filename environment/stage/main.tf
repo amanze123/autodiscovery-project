@@ -1,13 +1,13 @@
 module "stage_vpc" {
-  source = "./modules/vpc"
+  source = "../../modules/vpc"
 }
 
 module "stage_keypair" {
-  source   = "./modules/keypair"
+  source   = "../../modules/keypair"
   key_name = "UST1keypair2"
 }
 module "stage_security_group" {
-  source   = "./modules/security_group"
+  source   = "../../modules/security_group"
   sg_name  = "jenkins_sg"
   sg_name1 = "bastion_sg"
   sg_name2 = "docker_sg"
@@ -19,10 +19,10 @@ module "stage_security_group" {
   vpc_id   = module.stage_vpc.vpc-id
 }
 module "stage_iam" {
-  source = "./modules/iam"
+  source = "../../modules/iam"
 }
 module "stage_ansible" {
-  source                 = "./modules/ansible"
+  source                 = "../../modules/ansible"
   ami                    = "ami-06640050dc3f556bb"
   instance_type          = "t2.micro"
   availability_zone      = "us-east-1a"
@@ -33,7 +33,7 @@ module "stage_ansible" {
   depends_on = [module.stage_asg]
 }
 module "stage_bastion" {
-  source                 = "./modules/bastion_host"
+  source                 = "../../modules/bastion_host"
   ami                    = "ami-06640050dc3f556bb"
   instance_type          = "t2.micro"
   availability_zone      = "us-east-1a"
@@ -42,7 +42,7 @@ module "stage_bastion" {
   key_id                 = module.stage_keypair.key_id
 }
 module "stage_sonarqube" {
-  source                 = "./modules/sonarqube"
+  source                 = "../../modules/sonarqube"
   ami_ubuntu         = "ami-08c40ec9ead489470"
   instance_type          = "t2.medium"
   vpc_security_group_ids = [module.stage_security_group.SonarqubeSG]
@@ -50,13 +50,13 @@ module "stage_sonarqube" {
   key_name           = module.stage_keypair.key_id
 }
 # module "stage_rds" {
-#   source    = "./modules/rds"
+#   source    = "../../modules/rds"
 #   rds_name  = "rds_subnet_group"
 #   vpc_sg_id = [module.stage_security_group.rdsSG]
 #   subnet_id = [module.stage_vpc.subnet-id3, module.stage_vpc.subnet-id4]
 # }
 module "stage_jenkins" {
-  source                 = "./modules/jenkins"
+  source                 = "../../modules/jenkins"
   ami                    = "ami-06640050dc3f556bb"
   instance_type          = "t2.medium"
   availability_zone      = "us-east-1a"
@@ -66,7 +66,7 @@ module "stage_jenkins" {
 
 }
 module "stage_docker" {
-  source                 = "./modules/docker"
+  source                 = "../../modules/docker"
   ami                    = "ami-06640050dc3f556bb"
   instance_type          = "t2.medium"
   availability_zone      = "us-east-1b"
@@ -75,7 +75,7 @@ module "stage_docker" {
   key_id                 = module.stage_keypair.key_id
 }
 module "stage_asg" {
-  source              = "./modules/asg"
+  source              = "../../modules/asg"
   ami-name            = "stage-docker-asg"
   target-instance     = module.stage_docker.docker_id
   depends_on          = [module.stage_docker.docker_id]
@@ -89,7 +89,7 @@ module "stage_asg" {
   asg-policy = "docker-policy-asg"
 }
 module "stage_lb_jenkins" {
-  source       = "./modules/lb_jenkins"
+  source       = "../../modules/lb_jenkins"
   subnet_id    = [module.stage_vpc.subnet-id1]
   elb_sg1      = [module.stage_security_group.jenkins_elbSG]
   elb-instance = [module.stage_jenkins.Jenkins_ID]
@@ -97,13 +97,13 @@ module "stage_lb_jenkins" {
   elb_name     = "lb-jenkins"
 }
 module "stage_loadbalancer" {
-  source                 = "./modules/loadbalancer"
+  source                 = "../../modules/loadbalancer"
   vpc_name               = module.stage_vpc.vpc-id
   vpc_security_group_ids = [module.stage_security_group.docker_lbSG]
   subnet_id1             = [module.stage_vpc.subnet-id1, module.stage_vpc.subnet-id2]
 }
 module "stage_route53" {
-  source      = "./modules/route53"
+  source      = "../../modules/route53"
   domain_name = "teemone.xyz"
   dns_name    = module.stage_loadbalancer.Load_Balancer_dns
   zone_id     = module.stage_loadbalancer.Load_Balancer_zone_id
