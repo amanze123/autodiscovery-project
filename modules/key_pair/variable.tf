@@ -1,3 +1,3 @@
 variable "key_path" {
-    default = "~/Keypairs/UST-apC.pub"
+    default = "~/Desktop/git/autodiscovery-project/UST-apC.pub"
 }
