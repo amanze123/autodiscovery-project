@@ -1,7 +1,5 @@
 provider "aws" {
   region                   = "us-west-2"
-  profile                  = "Groupaccess"
-  shared_credentials_files = ["~/.aws/credentials"]
 }
 
 module "dev_vpc" {
