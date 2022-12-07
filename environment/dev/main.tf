@@ -13,7 +13,7 @@ module "dev_security_group" {
 
 module "dev_key_pair" {
   source = "../../modules/key_pair"
-  key_path = *.auto.tfvars
+  key_path = var.key_path
 }
 
 module "dev_docker_server" {
