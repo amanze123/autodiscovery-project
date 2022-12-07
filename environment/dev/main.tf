@@ -13,6 +13,7 @@ module "dev_security_group" {
 
 module "dev_key_pair" {
   source = "../../modules/key_pair"
+  key_path = key-path
 }
 
 module "dev_docker_server" {
